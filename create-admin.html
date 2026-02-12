@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroLink - Auto Admin Setup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .logo {
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+        
+        .logo p {
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .message {
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .credentials {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: left;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        
+        .credentials strong {
+            color: #333;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        a, button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        .info-text {
+            color: #999;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>🌾 AgroLink</h1>
+            <p>Auto Admin Setup</p>
+        </div>
+        
+        <div id="content">
+            <div class="spinner"></div>
+            <p style="color: #999;">Setting up admin account...</p>
+        </div>
+    </div>
+    
+    <script>
+        // Automatically create admin on page load
+        fetch('api-create-admin.php')
+            .then(response => response.json())
+            .then(data => {
+                const content = document.getElementById('content');
+                content.innerHTML = '';
+                
+                if (data.success) {
+                    // Success - show credentials
+                    content.innerHTML = `
+                        <div class="message success">
+                            ✓ Admin account created successfully!
+                        </div>
+                        
+                        <div class="credentials">
+                            <strong>Email:</strong> ${data.admin.email}<br>
+                            <strong>Password:</strong> ${data.admin.password}
+                        </div>
+                        
+                        <div class="message warning">
+                            ⚠️ Important: Change the default password after your first login!
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <a href="login.php" class="btn-primary">Go to Login</a>
+                            <a href="index.php" class="btn-secondary">Go to Marketplace</a>
+                        </div>
+                        
+                        <p class="info-text">You can now log in with the credentials above</p>
+                    `;
+                } else {
+                    // Error or admin already exists
+                    if (data.message.includes('already exists')) {
+                        content.innerHTML = `
+                            <div class="message warning">
+                                ℹ️ ${data.message}
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <a href="login.php" class="btn-primary">Go to Login</a>
+                            </div>
+                        `;
+                    } else {
+                        content.innerHTML = `
+                            <div class="message error">
+                                ✗ ${data.message}
+                            </div>
+                            
+                            <p style="color: #999; font-size: 13px; margin-top: 20px;">
+                                Please ensure:
+                            </p>
+                            <ul style="text-align: left; color: #999; font-size: 13px; margin: 10px 0;">
+                                <li>Database is created and configured</li>
+                                <li>database.sql has been executed</li>
+                                <li>db.php has correct credentials</li>
+                            </ul>
+                            
+                            <div class="action-buttons">
+                                <button onclick="location.reload()" class="btn-primary">Retry</button>
+                                <a href="setup.php" class="btn-secondary">Run Setup</a>
+                            </div>
+                        `;
+                    }
+                }
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = `
+                    <div class="message error">
+                        ✗ Error: ${error.message}
+                    </div>
+                    
+                    <p style="color: #999; font-size: 13px; margin-top: 20px;">
+                        Failed to connect to server. Please check:
+                    </p>
+                    <ul style="text-align: left; color: #999; font-size: 13px; margin: 10px 0;">
+                        <li>Server is running</li>
+                        <li>Database connection is working</li>
+                        <li>Check browser console for details</li>
+                    </ul>
+                    
+                    <div class="action-buttons">
+                        <button onclick="location.reload()" class="btn-primary">Retry</button>
+                    </div>
+                `;
+            });
+    </script>
+</body>
+</html>
