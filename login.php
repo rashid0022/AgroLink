@@ -10,11 +10,11 @@ $success = '';
 if (isLoggedIn()) {
     $user = getCurrentUser();
     if ($user['role'] === 'Admin') {
-        header("Location: dashboard/admin.php");
+        header("Location: ../dashboard/admin.php");
     } elseif ($user['role'] === 'Farmer') {
-        header("Location: dashboard/farmer.php");
+        header("Location: ../dashboard/farmer.php");
     } else {
-        header("Location: dashboard/customer.php");
+        header("Location: ../dashboard/customer.php");
     }
     exit();
 }
