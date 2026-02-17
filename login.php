@@ -6,38 +6,31 @@ require_once 'functions.php';
 $error = '';
 $success = '';
 
-// Check if user already logged in
 if (isLoggedIn()) {
     $user = getCurrentUser();
     if ($user['role'] === 'Admin') {
-        header("Location: ../dashboard/admin.php");
+        header("Location: dashboard/admin.php");
     } elseif ($user['role'] === 'Farmer') {
-        header("Location: ../dashboard/farmer.php");
+        header("Location: dashboard/farmer.php");
     } else {
-        header("Location: ../dashboard/customer.php");
+        header("Location: dashboard/customer.php");
     }
     exit();
 }
 
-// Server-side login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-    $password = isset($_POST['password']) ? $_POST['password'] : '';
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
 
     if (empty($email) || empty($password)) {
         $error = 'Please enter email and password';
     } else {
-        $result = loginUser($email, $password); // your function from functions.php
-
+        $result = loginUser($email, $password);
         if ($result['success']) {
             $role = $_SESSION['role'];
-            if ($role === 'Admin') {
-                header("Location: dashboard/admin.php");
-            } elseif ($role === 'Farmer') {
-                header("Location: dashboard/farmer.php");
-            } else {
-                header("Location: dashboard/customer.php");
-            }
+            if ($role === 'Admin') header("Location: dashboard/admin.php");
+            elseif ($role === 'Farmer') header("Location: dashboard/farmer.php");
+            else header("Location: dashboard/customer.php");
             exit();
         } else {
             $error = $result['message'];
@@ -45,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

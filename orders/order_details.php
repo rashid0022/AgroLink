@@ -24,7 +24,7 @@ $is_farmer = false;
 if ($user['role'] === 'Farmer') {
     $farmer = getFarmerByUserId($user['user_id']);
     $order_items = getOrderItems($order_id);
-    
+
     foreach ($order_items as $item) {
         $stmt = $GLOBALS['conn']->prepare("
             SELECT farmer_id FROM products WHERE product_id = ?
@@ -58,7 +58,7 @@ $payment = $stmt->fetch();
 // Handle order status updates (for farmer/admin)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($is_farmer || $is_admin)) {
     $action = $_POST['action'] ?? null;
-    
+
     if ($action === 'mark_delivered') {
         $stmt = $GLOBALS['conn']->prepare("
             UPDATE orders SET delivery_status = 'Delivered' WHERE order_id = ?
@@ -101,6 +101,7 @@ foreach ($order_items as $item) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -111,51 +112,51 @@ foreach ($order_items as $item) {
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f6fa;
             color: #333;
         }
-        
+
         header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         header h1 {
             display: inline-block;
             font-size: 24px;
             margin-right: 20px;
         }
-        
+
         .header-right {
             float: right;
             text-align: right;
         }
-        
+
         .header-right a {
             color: white;
             text-decoration: none;
             font-weight: 600;
         }
-        
+
         .container {
             max-width: 1000px;
             margin: 30px auto;
             padding: 0 20px;
         }
-        
+
         .card {
             background: white;
             border-radius: 10px;
             padding: 30px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         h2 {
             color: #667eea;
             margin-bottom: 20px;
@@ -163,27 +164,27 @@ foreach ($order_items as $item) {
             padding-bottom: 10px;
             border-bottom: 2px solid #f0f4ff;
         }
-        
+
         h3 {
             color: #333;
             margin-top: 15px;
             margin-bottom: 10px;
             font-size: 15px;
         }
-        
+
         .order-header {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
-        
+
         .info-item {
             padding: 15px;
             background: #f8f9fa;
             border-radius: 8px;
         }
-        
+
         .info-item label {
             display: block;
             font-size: 12px;
@@ -192,14 +193,14 @@ foreach ($order_items as $item) {
             font-weight: 600;
             margin-bottom: 5px;
         }
-        
+
         .info-item value {
             display: block;
             font-size: 16px;
             color: #333;
             font-weight: 600;
         }
-        
+
         .status-badge {
             display: inline-block;
             padding: 6px 12px;
@@ -208,33 +209,33 @@ foreach ($order_items as $item) {
             font-weight: 600;
             margin-bottom: 5px;
         }
-        
+
         .status-pending {
             background: #fff3cd;
             color: #856404;
         }
-        
+
         .status-paid {
             background: #d4edda;
             color: #155724;
         }
-        
+
         .status-delivered {
             background: #d1ecf1;
             color: #0c5460;
         }
-        
+
         .status-cancelled {
             background: #f8d7da;
             color: #721c24;
         }
-        
+
         .items-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-        
+
         .items-table th {
             background: #f8f9fa;
             padding: 12px;
@@ -244,33 +245,33 @@ foreach ($order_items as $item) {
             border-bottom: 2px solid #eee;
             font-size: 13px;
         }
-        
+
         .items-table td {
             padding: 15px 12px;
             border-bottom: 1px solid #eee;
         }
-        
+
         .items-table tr:hover {
             background: #f8f9fa;
         }
-        
+
         .item-name {
             font-weight: 600;
             color: #333;
         }
-        
+
         .item-price {
             text-align: right;
             color: #667eea;
             font-weight: 600;
         }
-        
+
         .price-summary {
             text-align: right;
             padding: 15px 0;
             border-top: 2px solid #eee;
         }
-        
+
         .price-row {
             display: flex;
             justify-content: flex-end;
@@ -278,7 +279,7 @@ foreach ($order_items as $item) {
             margin: 8px 0;
             font-size: 14px;
         }
-        
+
         .total-row {
             margin-top: 15px;
             padding-top: 15px;
@@ -287,36 +288,36 @@ foreach ($order_items as $item) {
             font-size: 18px;
             color: #667eea;
         }
-        
+
         .section {
             margin-bottom: 30px;
         }
-        
+
         .address-info {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
-        
+
         .address-box {
             padding: 15px;
             background: #f8f9fa;
             border-radius: 8px;
         }
-        
+
         .address-box label {
             display: block;
             font-weight: 600;
             color: #667eea;
             margin-bottom: 10px;
         }
-        
+
         .address-box p {
             font-size: 14px;
             color: #666;
             line-height: 1.6;
         }
-        
+
         .farmer-card {
             padding: 15px;
             background: #f0f4ff;
@@ -324,28 +325,28 @@ foreach ($order_items as $item) {
             border-radius: 6px;
             margin-bottom: 10px;
         }
-        
+
         .farmer-card h4 {
             color: #667eea;
             margin-bottom: 5px;
         }
-        
+
         .farmer-card p {
             font-size: 13px;
             color: #666;
             margin: 3px 0;
         }
-        
+
         .form-group {
             margin-bottom: 15px;
         }
-        
+
         .form-group label {
             display: block;
             font-weight: 600;
             margin-bottom: 8px;
         }
-        
+
         .form-group textarea {
             width: 100%;
             padding: 12px;
@@ -356,13 +357,13 @@ foreach ($order_items as $item) {
             resize: vertical;
             min-height: 100px;
         }
-        
+
         .button-group {
             display: flex;
             gap: 10px;
             margin-top: 20px;
         }
-        
+
         button {
             padding: 12px 24px;
             border: none;
@@ -372,26 +373,26 @@ foreach ($order_items as $item) {
             font-size: 14px;
             transition: all 0.3s ease;
         }
-        
+
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
-        
+
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
-        
+
         .btn-secondary {
             background: #f0f0f0;
             color: #333;
         }
-        
+
         .btn-secondary:hover {
             background: #e0e0e0;
         }
-        
+
         .success-message {
             background: #d4edda;
             color: #155724;
@@ -400,7 +401,7 @@ foreach ($order_items as $item) {
             margin-bottom: 20px;
             border-left: 4px solid #c3e6cb;
         }
-        
+
         .modal {
             display: none;
             position: fixed;
@@ -409,9 +410,9 @@ foreach ($order_items as $item) {
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0, 0, 0, 0.4);
         }
-        
+
         .modal-content {
             background-color: white;
             margin: 5% auto;
@@ -419,17 +420,17 @@ foreach ($order_items as $item) {
             border-radius: 10px;
             width: 90%;
             max-width: 500px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
-        
+
         .modal-header {
             margin-bottom: 20px;
         }
-        
+
         .modal-header h2 {
             margin: 0;
         }
-        
+
         .close-modal {
             color: #999;
             float: right;
@@ -437,12 +438,13 @@ foreach ($order_items as $item) {
             font-weight: bold;
             cursor: pointer;
         }
-        
+
         .close-modal:hover {
             color: #333;
         }
     </style>
 </head>
+
 <body>
     <header>
         <h1>📦 Order #<?php echo $order['order_id']; ?></h1>
@@ -451,12 +453,12 @@ foreach ($order_items as $item) {
         </div>
         <div style="clear:both;"></div>
     </header>
-    
+
     <div class="container">
         <?php if (isset($success)): ?>
             <div class="success-message"><?php echo htmlspecialchars($success); ?></div>
         <?php endif; ?>
-        
+
         <div class="card">
             <div class="order-header">
                 <div class="info-item">
@@ -485,7 +487,7 @@ foreach ($order_items as $item) {
                 </div>
             </div>
         </div>
-        
+
         <!-- Customer Information (for farmer/admin view) -->
         <?php if ($is_farmer || $is_admin): ?>
             <div class="card section">
@@ -502,18 +504,18 @@ foreach ($order_items as $item) {
                 </div>
             </div>
         <?php endif; ?>
-        
+
         <!-- Delivery Address (for all) -->
         <div class="card section">
             <h2>Delivery Information</h2>
             <div class="address-info">
                 <div class="address-box">
                     <label>Address</label>
-                    <p><?php echo htmlspecialchars($order['delivery_address']); ?></p>
+                    <p><?php echo htmlspecialchars($order['delivery_address'] ?? 'N/A'); ?></p>
                 </div>
                 <div class="address-box">
                     <label>City</label>
-                    <p><?php echo htmlspecialchars($order['delivery_city']); ?></p>
+                    <p><?php echo htmlspecialchars($order['delivery_city'] ?? 'N/A'); ?></p>
                 </div>
                 <div class="address-box">
                     <label>Postal Code</label>
@@ -521,7 +523,8 @@ foreach ($order_items as $item) {
                 </div>
             </div>
         </div>
-        
+
+
         <!-- Order Items -->
         <div class="card section">
             <h2>Order Items</h2>
@@ -549,7 +552,7 @@ foreach ($order_items as $item) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
-            
+
             <div class="price-summary">
                 <div class="price-row">
                     <span>Subtotal:</span>
@@ -565,7 +568,7 @@ foreach ($order_items as $item) {
                 </div>
             </div>
         </div>
-        
+
         <!-- Payment Information -->
         <?php if ($payment): ?>
             <div class="card section">
@@ -592,7 +595,7 @@ foreach ($order_items as $item) {
                 </div>
             </div>
         <?php endif; ?>
-        
+
         <!-- Farmer Details (for customer view) -->
         <?php if ($is_customer): ?>
             <div class="card section">
@@ -609,7 +612,7 @@ foreach ($order_items as $item) {
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
-        
+
         <!-- Action Buttons -->
         <div class="card">
             <?php if ($is_farmer || $is_admin): ?>
@@ -621,13 +624,13 @@ foreach ($order_items as $item) {
                     </form>
                 <?php endif; ?>
             <?php endif; ?>
-            
+
             <?php if ($is_customer && ($order['delivery_status'] === 'Delivered' || $order['delivery_status'] === 'Failed')): ?>
                 <button class="btn-primary" onclick="openReportModal()">⚠️ Report Issue</button>
             <?php endif; ?>
         </div>
     </div>
-    
+
     <!-- Report Modal -->
     <?php if ($is_customer): ?>
         <div id="reportModal" class="modal">
@@ -649,16 +652,16 @@ foreach ($order_items as $item) {
                 </form>
             </div>
         </div>
-        
+
         <script>
             function openReportModal() {
                 document.getElementById('reportModal').style.display = 'block';
             }
-            
+
             function closeReportModal() {
                 document.getElementById('reportModal').style.display = 'none';
             }
-            
+
             window.onclick = function(event) {
                 const modal = document.getElementById('reportModal');
                 if (event.target === modal) {
@@ -668,4 +671,5 @@ foreach ($order_items as $item) {
         </script>
     <?php endif; ?>
 </body>
+
 </html>

@@ -12,7 +12,8 @@ require_once 'db.php';
 /**
  * Start Session if not already started
  */
-function startSession() {
+function startSession()
+{
     if (session_status() == PHP_SESSION_NONE) {
         session_start();
     }
@@ -21,7 +22,8 @@ function startSession() {
 /**
  * Check if user is logged in
  */
-function isLoggedIn() {
+function isLoggedIn()
+{
     startSession();
     return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
 }
@@ -29,14 +31,15 @@ function isLoggedIn() {
 /**
  * Get current user information
  */
-function getCurrentUser() {
+function getCurrentUser()
+{
     global $conn;
     startSession();
-    
+
     if (!isLoggedIn()) {
         return null;
     }
-    
+
     try {
         $stmt = $conn->prepare("SELECT * FROM users WHERE user_id = ?");
         $stmt->execute([$_SESSION['user_id']]);
@@ -50,7 +53,8 @@ function getCurrentUser() {
 /**
  * Redirect to login if not authenticated
  */
-function redirectIfNotLoggedIn() {
+function redirectIfNotLoggedIn()
+{
     if (!isLoggedIn()) {
         header("Location: login.php");
         exit();
@@ -60,7 +64,8 @@ function redirectIfNotLoggedIn() {
 /**
  * Check user role
  */
-function hasRole($role) {
+function hasRole($role)
+{
     $user = getCurrentUser();
     return $user && $user['role'] === $role;
 }
@@ -68,7 +73,8 @@ function hasRole($role) {
 /**
  * Redirect if user doesn't have required role
  */
-function requireRole($role) {
+function requireRole($role)
+{
     redirectIfNotLoggedIn();
     if (!hasRole($role)) {
         header("Location: index.php");
@@ -83,9 +89,10 @@ function requireRole($role) {
 /**
  * Register new user (Generic)
  */
-function registerUser($fullName, $email, $password, $role) {
+function registerUser($fullName, $email, $password, $role)
+{
     global $conn;
-    
+
     try {
         // Check if email already exists
         $stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ?");
@@ -93,17 +100,17 @@ function registerUser($fullName, $email, $password, $role) {
         if ($stmt->rowCount() > 0) {
             return ['success' => false, 'message' => 'Email already registered'];
         }
-        
+
         // Hash password
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-        
+
         // Insert user
         $stmt = $conn->prepare("
             INSERT INTO users (full_name, email, password, role) 
             VALUES (?, ?, ?, ?)
         ");
         $stmt->execute([$fullName, $email, $hashedPassword, $role]);
-        
+
         return ['success' => true, 'message' => 'User registered successfully', 'user_id' => $conn->lastInsertId()];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -114,32 +121,40 @@ function registerUser($fullName, $email, $password, $role) {
 /**
  * Login user
  */
-function loginUser($email, $password) {
+function loginUser($email, $password)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
-        
+
         if (!$user) {
             return ['success' => false, 'message' => 'Invalid email or password'];
         }
-        
+
         if ($user['account_status'] === 'Blocked') {
             return ['success' => false, 'message' => 'Your account has been blocked'];
         }
-        
+
+       
+
+        // Check password
         if (!password_verify($password, $user['password'])) {
-            return ['success' => false, 'message' => 'Invalid email or password'];
+            // Temporary fallback for plain-text passwords (not recommended long-term)
+            if ($password !== $user['password']) {
+                return ['success' => false, 'message' => 'Invalid email or password'];
+            }
         }
-        
+
+
         startSession();
         $_SESSION['user_id'] = $user['user_id'];
         $_SESSION['email'] = $user['email'];
         $_SESSION['role'] = $user['role'];
         $_SESSION['full_name'] = $user['full_name'];
-        
+
         return ['success' => true, 'message' => 'Login successful', 'role' => $user['role']];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -150,7 +165,8 @@ function loginUser($email, $password) {
 /**
  * Logout user
  */
-function logoutUser() {
+function logoutUser()
+{
     startSession();
     session_destroy();
     return ['success' => true, 'message' => 'Logged out successfully'];
@@ -163,16 +179,17 @@ function logoutUser() {
 /**
  * Register farmer
  */
-function registerFarmer($userId, $farmName, $phoneNumber, $location, $nationalId, $houseNumber, $businessLicense) {
+function registerFarmer($userId, $farmName, $phoneNumber, $location, $nationalId, $houseNumber, $businessLicense)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("
             INSERT INTO farmers (user_id, farm_name, phone_number, location, national_id_number, house_number, business_license_number) 
             VALUES (?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([$userId, $farmName, $phoneNumber, $location, $nationalId, $houseNumber, $businessLicense]);
-        
+
         return ['success' => true, 'message' => 'Farmer registration submitted for verification', 'farmer_id' => $conn->lastInsertId()];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -183,9 +200,10 @@ function registerFarmer($userId, $farmName, $phoneNumber, $location, $nationalId
 /**
  * Get farmer details
  */
-function getFarmerByUserId($userId) {
+function getFarmerByUserId($userId)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("SELECT * FROM farmers WHERE user_id = ?");
         $stmt->execute([$userId]);
@@ -199,9 +217,10 @@ function getFarmerByUserId($userId) {
 /**
  * Get all farmers (for admin)
  */
-function getAllFarmers($status = null) {
+function getAllFarmers($status = null)
+{
     global $conn;
-    
+
     try {
         if ($status) {
             $stmt = $conn->prepare("
@@ -231,9 +250,10 @@ function getAllFarmers($status = null) {
 /**
  * Verify/Approve farmer (Admin)
  */
-function verifyFarmer($farmerId, $status) {
+function verifyFarmer($farmerId, $status)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("UPDATE farmers SET verification_status = ? WHERE farmer_id = ?");
         $stmt->execute([$status, $farmerId]);
@@ -251,16 +271,17 @@ function verifyFarmer($farmerId, $status) {
 /**
  * Register customer
  */
-function registerCustomer($userId, $phoneNumber, $address, $city, $postalCode) {
+function registerCustomer($userId, $phoneNumber, $address, $city, $postalCode)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("
             INSERT INTO customers (user_id, phone_number, address, city, postal_code) 
             VALUES (?, ?, ?, ?, ?)
         ");
         $stmt->execute([$userId, $phoneNumber, $address, $city, $postalCode]);
-        
+
         return ['success' => true, 'message' => 'Customer registration successful', 'customer_id' => $conn->lastInsertId()];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -271,9 +292,10 @@ function registerCustomer($userId, $phoneNumber, $address, $city, $postalCode) {
 /**
  * Get customer details
  */
-function getCustomerByUserId($userId) {
+function getCustomerByUserId($userId)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("SELECT * FROM customers WHERE user_id = ?");
         $stmt->execute([$userId]);
@@ -287,9 +309,10 @@ function getCustomerByUserId($userId) {
 /**
  * Update customer profile
  */
-function updateCustomerProfile($userId, $phoneNumber, $address, $city, $postalCode) {
+function updateCustomerProfile($userId, $phoneNumber, $address, $city, $postalCode)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("
             UPDATE customers 
@@ -297,7 +320,7 @@ function updateCustomerProfile($userId, $phoneNumber, $address, $city, $postalCo
             WHERE user_id = ?
         ");
         $stmt->execute([$phoneNumber, $address, $city, $postalCode, $userId]);
-        
+
         return ['success' => true, 'message' => 'Profile updated successfully'];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -312,16 +335,17 @@ function updateCustomerProfile($userId, $phoneNumber, $address, $city, $postalCo
 /**
  * Add new product
  */
-function addProduct($farmerId, $productName, $category, $price, $quantityAvailable) {
+function addProduct($farmerId, $productName, $category, $price, $quantityAvailable)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("
             INSERT INTO products (farmer_id, product_name, category, price, quantity_available) 
             VALUES (?, ?, ?, ?, ?)
         ");
         $stmt->execute([$farmerId, $productName, $category, $price, $quantityAvailable]);
-        
+
         return ['success' => true, 'message' => 'Product added successfully', 'product_id' => $conn->lastInsertId()];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -332,9 +356,10 @@ function addProduct($farmerId, $productName, $category, $price, $quantityAvailab
 /**
  * Get product by ID
  */
-function getProduct($productId) {
+function getProduct($productId)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("
             SELECT p.*, f.farm_name, u.full_name as farmer_name 
@@ -351,12 +376,14 @@ function getProduct($productId) {
     }
 }
 
+
 /**
  * Get all approved products
  */
-function getAllApprovedProducts($category = null) {
+function getAllApprovedProducts($category = null)
+{
     global $conn;
-    
+
     try {
         if ($category) {
             $stmt = $conn->prepare("
@@ -389,9 +416,10 @@ function getAllApprovedProducts($category = null) {
 /**
  * Get farmer's products
  */
-function getFarmerProducts($farmerId, $status = null) {
+function getFarmerProducts($farmerId, $status = null)
+{
     global $conn;
-    
+
     try {
         if ($status) {
             $stmt = $conn->prepare("
@@ -418,9 +446,10 @@ function getFarmerProducts($farmerId, $status = null) {
 /**
  * Update product
  */
-function updateProduct($productId, $productName, $category, $price, $quantityAvailable) {
+function updateProduct($productId, $productName, $category, $price, $quantityAvailable)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("
             UPDATE products 
@@ -428,7 +457,7 @@ function updateProduct($productId, $productName, $category, $price, $quantityAva
             WHERE product_id = ?
         ");
         $stmt->execute([$productName, $category, $price, $quantityAvailable, $productId]);
-        
+
         return ['success' => true, 'message' => 'Product updated successfully'];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -439,13 +468,14 @@ function updateProduct($productId, $productName, $category, $price, $quantityAva
 /**
  * Delete product
  */
-function deleteProduct($productId) {
+function deleteProduct($productId)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("DELETE FROM products WHERE product_id = ?");
         $stmt->execute([$productId]);
-        
+
         return ['success' => true, 'message' => 'Product deleted successfully'];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -456,13 +486,14 @@ function deleteProduct($productId) {
 /**
  * Approve/Reject product (Admin)
  */
-function approveProduct($productId, $status) {
+function approveProduct($productId, $status)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("UPDATE products SET approval_status = ? WHERE product_id = ?");
         $stmt->execute([$status, $productId]);
-        
+
         return ['success' => true, 'message' => 'Product approval status updated'];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -473,9 +504,10 @@ function approveProduct($productId, $status) {
 /**
  * Get featured products
  */
-function getFeaturedProducts() {
+function getFeaturedProducts()
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("
             SELECT p.*, f.farm_name 
@@ -499,16 +531,17 @@ function getFeaturedProducts() {
 /**
  * Create order
  */
-function createOrder($userId, $totalAmount) {
+function createOrder($userId, $totalAmount)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("
             INSERT INTO orders (user_id, total_amount) 
             VALUES (?, ?)
         ");
         $stmt->execute([$userId, $totalAmount]);
-        
+
         return ['success' => true, 'message' => 'Order created successfully', 'order_id' => $conn->lastInsertId()];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -519,9 +552,10 @@ function createOrder($userId, $totalAmount) {
 /**
  * Add order item
  */
-function addOrderItem($orderId, $productId, $quantity, $price) {
+function addOrderItem($orderId, $productId, $quantity, $price)
+{
     global $conn;
-    
+
     try {
         // Update product quantity
         $stmt = $conn->prepare("
@@ -530,14 +564,14 @@ function addOrderItem($orderId, $productId, $quantity, $price) {
             WHERE product_id = ?
         ");
         $stmt->execute([$quantity, $productId]);
-        
+
         // Insert order item
         $stmt = $conn->prepare("
             INSERT INTO order_items (order_id, product_id, quantity, price) 
             VALUES (?, ?, ?, ?)
         ");
         $stmt->execute([$orderId, $productId, $quantity, $price]);
-        
+
         return ['success' => true, 'message' => 'Item added to order'];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -548,9 +582,10 @@ function addOrderItem($orderId, $productId, $quantity, $price) {
 /**
  * Get order details
  */
-function getOrder($orderId) {
+function getOrder($orderId)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("SELECT * FROM orders WHERE order_id = ?");
         $stmt->execute([$orderId]);
@@ -564,9 +599,10 @@ function getOrder($orderId) {
 /**
  * Get order items
  */
-function getOrderItems($orderId) {
+function getOrderItems($orderId)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("
             SELECT oi.*, p.product_name, f.farm_name 
@@ -586,9 +622,10 @@ function getOrderItems($orderId) {
 /**
  * Get customer orders
  */
-function getCustomerOrders($userId) {
+function getCustomerOrders($userId)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("
             SELECT * FROM orders 
@@ -606,9 +643,10 @@ function getCustomerOrders($userId) {
 /**
  * Update order status
  */
-function updateOrderStatus($orderId, $orderStatus, $deliveryStatus = null) {
+function updateOrderStatus($orderId, $orderStatus, $deliveryStatus = null)
+{
     global $conn;
-    
+
     try {
         if ($deliveryStatus) {
             $stmt = $conn->prepare("
@@ -625,7 +663,7 @@ function updateOrderStatus($orderId, $orderStatus, $deliveryStatus = null) {
             ");
             $stmt->execute([$orderStatus, $orderId]);
         }
-        
+
         return ['success' => true, 'message' => 'Order status updated'];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -640,19 +678,20 @@ function updateOrderStatus($orderId, $orderStatus, $deliveryStatus = null) {
 /**
  * Create payment record (Escrow)
  */
-function createPayment($orderId, $paymentMethod) {
+function createPayment($orderId, $paymentMethod)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("
             INSERT INTO payments (order_id, payment_method) 
             VALUES (?, ?)
         ");
         $stmt->execute([$orderId, $paymentMethod]);
-        
+
         // Update order status to Paid
         updateOrderStatus($orderId, 'Paid');
-        
+
         return ['success' => true, 'message' => 'Payment recorded', 'payment_id' => $conn->lastInsertId()];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -663,9 +702,10 @@ function createPayment($orderId, $paymentMethod) {
 /**
  * Get payment details
  */
-function getPayment($paymentId) {
+function getPayment($paymentId)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("SELECT * FROM payments WHERE payment_id = ?");
         $stmt->execute([$paymentId]);
@@ -679,13 +719,14 @@ function getPayment($paymentId) {
 /**
  * Release payment to farmer
  */
-function releasePayment($paymentId) {
+function releasePayment($paymentId)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("UPDATE payments SET payment_status = 'Released' WHERE payment_id = ?");
         $stmt->execute([$paymentId]);
-        
+
         return ['success' => true, 'message' => 'Payment released successfully'];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -696,13 +737,14 @@ function releasePayment($paymentId) {
 /**
  * Refund payment
  */
-function refundPayment($paymentId) {
+function refundPayment($paymentId)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("UPDATE payments SET payment_status = 'Refunded' WHERE payment_id = ?");
         $stmt->execute([$paymentId]);
-        
+
         return ['success' => true, 'message' => 'Payment refunded successfully'];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -717,19 +759,20 @@ function refundPayment($paymentId) {
 /**
  * Create receipt
  */
-function createReceipt($paymentId, $totalPaid) {
+function createReceipt($paymentId, $totalPaid)
+{
     global $conn;
-    
+
     try {
         // Generate unique receipt number
         $receiptNumber = 'RCP-' . date('YmdHis') . '-' . rand(1000, 9999);
-        
+
         $stmt = $conn->prepare("
             INSERT INTO receipts (payment_id, receipt_number, total_paid) 
             VALUES (?, ?, ?)
         ");
         $stmt->execute([$paymentId, $receiptNumber, $totalPaid]);
-        
+
         return ['success' => true, 'message' => 'Receipt generated', 'receipt_id' => $conn->lastInsertId(), 'receipt_number' => $receiptNumber];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -740,9 +783,10 @@ function createReceipt($paymentId, $totalPaid) {
 /**
  * Get receipt
  */
-function getReceipt($receiptId) {
+function getReceipt($receiptId)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("
             SELECT r.*, p.order_id, o.total_amount, o.order_date, u.full_name, u.email 
@@ -767,16 +811,17 @@ function getReceipt($receiptId) {
 /**
  * Create report (Fraud/Issue)
  */
-function createReport($orderId, $userId, $reason) {
+function createReport($orderId, $userId, $reason)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("
             INSERT INTO reports (order_id, user_id, reason) 
             VALUES (?, ?, ?)
         ");
         $stmt->execute([$orderId, $userId, $reason]);
-        
+
         return ['success' => true, 'message' => 'Report submitted successfully', 'report_id' => $conn->lastInsertId()];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -787,9 +832,10 @@ function createReport($orderId, $userId, $reason) {
 /**
  * Get all reports (Admin)
  */
-function getAllReports($status = null) {
+function getAllReports($status = null)
+{
     global $conn;
-    
+
     try {
         if ($status) {
             $stmt = $conn->prepare("
@@ -821,13 +867,14 @@ function getAllReports($status = null) {
 /**
  * Update report status
  */
-function updateReportStatus($reportId, $status) {
+function updateReportStatus($reportId, $status)
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("UPDATE reports SET report_status = ? WHERE report_id = ?");
         $stmt->execute([$status, $reportId]);
-        
+
         return ['success' => true, 'message' => 'Report status updated'];
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -842,30 +889,34 @@ function updateReportStatus($reportId, $status) {
 /**
  * Format currency value
  */
-function formatCurrency($amount) {
+function formatCurrency($amount)
+{
     return 'KES ' . number_format($amount, 2);
 }
 
 /**
  * Format date
  */
-function formatDate($date) {
+function formatDate($date)
+{
     return date('d M Y', strtotime($date));
 }
 
 /**
  * Format datetime
  */
-function formatDateTime($datetime) {
+function formatDateTime($datetime)
+{
     return date('d M Y H:i', strtotime($datetime));
 }
 
 /**
  * Get unique categories
  */
-function getProductCategories() {
+function getProductCategories()
+{
     global $conn;
-    
+
     try {
         $stmt = $conn->prepare("SELECT DISTINCT category FROM products WHERE approval_status = 'Approved' ORDER BY category");
         $stmt->execute();
@@ -880,9 +931,10 @@ function getProductCategories() {
 /**
  * Search products
  */
-function searchProducts($keyword, $category = null) {
+function searchProducts($keyword, $category = null)
+{
     global $conn;
-    
+
     try {
         if ($category) {
             $stmt = $conn->prepare("
@@ -914,5 +966,3 @@ function searchProducts($keyword, $category = null) {
         return [];
     }
 }
-
-?>

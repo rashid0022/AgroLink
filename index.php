@@ -4,7 +4,7 @@ startSession();
 
 $products = [];
 $categoryList = getProductCategories();
-$selectedCategory = isset($_GET['category']) ? trim($_GET['category']) : '';
+$selectedCategory = $_GET['category'] ?? '';
 
 if (!empty($_GET['search'])) {
     $searchTerm = trim($_GET['search']);

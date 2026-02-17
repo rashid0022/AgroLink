@@ -10,14 +10,14 @@ $success = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $userId = intval($_POST['user_id']);
     $action = trim($_POST['action']);
-    
+
     // Block/enable user
     $newStatus = ($action === 'block') ? 'Blocked' : 'Active';
-    
+
     try {
         $stmt = $GLOBALS['conn']->prepare("UPDATE users SET account_status = ? WHERE user_id = ?");
         $stmt->execute([$newStatus, $userId]);
-        
+
         $success = 'User status updated successfully!';
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -29,14 +29,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 $stmt = $GLOBALS['conn']->prepare("
     SELECT * FROM users 
     WHERE user_id != ?
-    ORDER BY created_at DESC
+    ORDER BY user_id DESC
 ");
+
 $stmt->execute([$user['user_id']]);
 $users = $stmt->fetchAll();
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,43 +49,43 @@ $users = $stmt->fetchAll();
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f6fa;
             color: #333;
         }
-        
+
         header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         header h1 {
             display: inline-block;
             font-size: 24px;
             margin-right: 20px;
         }
-        
+
         .header-right {
             float: right;
             text-align: right;
         }
-        
+
         .header-right a {
             color: white;
             text-decoration: none;
             font-weight: 600;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 30px auto;
             padding: 0 20px;
         }
-        
+
         .error {
             background: #f8d7da;
             color: #721c24;
@@ -92,7 +94,7 @@ $users = $stmt->fetchAll();
             margin-bottom: 20px;
             border: 1px solid #f5c6cb;
         }
-        
+
         .success {
             background: #d4edda;
             color: #155724;
@@ -101,41 +103,41 @@ $users = $stmt->fetchAll();
             margin-bottom: 20px;
             border: 1px solid #c3e6cb;
         }
-        
+
         .users-table {
             background: white;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             overflow-x: auto;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        
+
         thead {
             background: #f8f9fa;
             border-bottom: 2px solid #ddd;
         }
-        
+
         th {
             padding: 15px;
             text-align: left;
             font-weight: 600;
             color: #333;
         }
-        
+
         td {
             padding: 15px;
             border-bottom: 1px solid #eee;
         }
-        
+
         tbody tr:hover {
             background: #f8f9fa;
         }
-        
+
         .role-badge {
             display: inline-block;
             padding: 5px 12px;
@@ -143,22 +145,22 @@ $users = $stmt->fetchAll();
             font-size: 12px;
             font-weight: 600;
         }
-        
+
         .role-admin {
             background: #f3e5f5;
             color: #6a1b9a;
         }
-        
+
         .role-farmer {
             background: #e8f5e9;
             color: #2e7d32;
         }
-        
+
         .role-customer {
             background: #e3f2fd;
             color: #1565c0;
         }
-        
+
         .status-badge {
             display: inline-block;
             padding: 5px 12px;
@@ -166,22 +168,22 @@ $users = $stmt->fetchAll();
             font-size: 12px;
             font-weight: 600;
         }
-        
+
         .status-active {
             background: #d4edda;
             color: #155724;
         }
-        
+
         .status-blocked {
             background: #f8d7da;
             color: #721c24;
         }
-        
+
         .action-btns {
             display: flex;
             gap: 8px;
         }
-        
+
         .btn {
             padding: 6px 12px;
             border: none;
@@ -192,21 +194,21 @@ $users = $stmt->fetchAll();
             text-decoration: none;
             display: inline-block;
         }
-        
+
         .btn-block {
             background: #f44336;
             color: white;
         }
-        
+
         .btn-enable {
             background: #4caf50;
             color: white;
         }
-        
+
         .btn:hover {
             opacity: 0.8;
         }
-        
+
         .empty-state {
             text-align: center;
             padding: 40px;
@@ -214,6 +216,7 @@ $users = $stmt->fetchAll();
         }
     </style>
 </head>
+
 <body>
     <header>
         <h1>👥 Manage Users</h1>
@@ -222,16 +225,16 @@ $users = $stmt->fetchAll();
         </div>
         <div style="clear:both;"></div>
     </header>
-    
+
     <div class="container">
         <?php if (!empty($error)): ?>
             <div class="error"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
-        
+
         <?php if (!empty($success)): ?>
             <div class="success"><?php echo htmlspecialchars($success); ?></div>
         <?php endif; ?>
-        
+
         <div class="users-table">
             <?php if (count($users) === 0): ?>
                 <div class="empty-state">
@@ -264,7 +267,8 @@ $users = $stmt->fetchAll();
                                         <?php echo htmlspecialchars($u['account_status']); ?>
                                     </span>
                                 </td>
-                                <td><?php echo formatDate($u['created_at']); ?></td>
+                                <td><?= isset($u['registered_date']) ? formatDateTime($u['registered_date']) : 'N/A' ?>
+                                </td>
                                 <td>
                                     <div class="action-btns">
                                         <?php if ($u['account_status'] === 'Active'): ?>
@@ -290,4 +294,5 @@ $users = $stmt->fetchAll();
         </div>
     </div>
 </body>
+
 </html>

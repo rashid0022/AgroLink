@@ -159,7 +159,7 @@
     </div>
     
     <script>
-        // Automatically create admin on page load
+        
         fetch('api-create-admin.php')
             .then(response => response.json())
             .then(data => {
@@ -167,7 +167,7 @@
                 content.innerHTML = '';
                 
                 if (data.success) {
-                    // Success - show credentials
+                    
                     content.innerHTML = `
                         <div class="message success">
                             ✓ Admin account created successfully!
@@ -190,7 +190,7 @@
                         <p class="info-text">You can now log in with the credentials above</p>
                     `;
                 } else {
-                    // Error or admin already exists
+                    
                     if (data.message.includes('already exists')) {
                         content.innerHTML = `
                             <div class="message warning">
