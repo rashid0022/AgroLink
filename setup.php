@@ -88,7 +88,7 @@ if (!empty($missing_tables)) {
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -111,9 +111,11 @@ if (!empty($missing_tables)) {
         }
         
         .logo h1 {
-            color: #667eea;
+            color: #11998e;
             font-size: 32px;
             margin-bottom: 5px;
+            border-bottom: 3px solid #11998e;
+            padding-bottom: 10px;
         }
         
         .logo p {
@@ -220,7 +222,7 @@ if (!empty($missing_tables)) {
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
         }
         

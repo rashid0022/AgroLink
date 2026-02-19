@@ -46,6 +46,7 @@ if (!empty($_GET['search'])) {
             position: sticky;
             top: 0;
             z-index: 1000;
+            border-bottom: 4px solid #11998e;
         }
 
         .header-content {
@@ -119,7 +120,7 @@ if (!empty($_GET['search'])) {
             flex: 1;
             padding: 14px;
             border-radius: 30px;
-            border: 1px solid #ddd;
+            border: 2px solid #11998e;
             outline: none;
             font-size: 14px;
             transition: 0.3s;
@@ -133,7 +134,7 @@ if (!empty($_GET['search'])) {
         .search-form button {
             padding: 14px 25px;
             border-radius: 30px;
-            border: none;
+            border: 2px solid #11998e;
             background: linear-gradient(135deg, #11998e, #38ef7d);
             color: white;
             font-weight: 600;
@@ -348,7 +349,7 @@ if (!empty($_GET['search'])) {
                             <div class="product-meta">
                                 <span>In Stock: <?php echo $product['quantity_available']; ?></span>
                             </div>
-                            <div class="product-price"><?php echo formatCurrency($product['price']); ?></div>
+                            <div class="product-price"><?php echo number_format($product['price'], 2); ?> TZS</div>
                             <?php if (isLoggedIn() && $_SESSION['role'] === 'Customer'): ?>
                                 <form method="GET" action="orders/checkout.php" style="display: inline;">
                                     <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">

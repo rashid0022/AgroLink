@@ -59,10 +59,11 @@ $orders = $stmt->fetchAll();
         }
         
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 4px solid #11998e;
         }
         
         header h1 {
@@ -107,8 +108,8 @@ $orders = $stmt->fetchAll();
         }
         
         .tab-btn.active {
-            color: #667eea;
-            border-bottom-color: #667eea;
+            color: #11998e;
+            border-bottom-color: #11998e;
         }
         
         .tab-content {
@@ -142,13 +143,13 @@ $orders = $stmt->fetchAll();
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 12px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #11998e;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
         .notification-card.unread {
             background: #f0f4ff;
-            border-left-color: #667eea;
+            border-left-color: #11998e;
             font-weight: 500;
         }
         
@@ -184,7 +185,7 @@ $orders = $stmt->fetchAll();
         }
         
         .delivery-card h3 {
-            color: #667eea;
+            color: #11998e;
             margin-bottom: 15px;
         }
         
@@ -242,7 +243,7 @@ $orders = $stmt->fetchAll();
         
         .badge {
             display: inline-block;
-            background: #667eea;
+            background: #11998e;
             color: white;
             padding: 4px 10px;
             border-radius: 12px;

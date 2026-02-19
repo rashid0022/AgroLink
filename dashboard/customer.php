@@ -28,10 +28,11 @@ $categoryList = getProductCategories();
         }
         
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 4px solid #11998e;
         }
         
         header h1 {
@@ -78,7 +79,7 @@ $categoryList = getProductCategories();
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #11998e;
             text-align: center;
         }
         
@@ -92,7 +93,7 @@ $categoryList = getProductCategories();
         .stat-value {
             font-size: 32px;
             font-weight: bold;
-            color: #667eea;
+            color: #11998e;
         }
         
         .menu-grid {
@@ -124,7 +125,7 @@ $categoryList = getProductCategories();
         }
         
         .menu-card h3 {
-            color: #667eea;
+            color: #11998e;
             margin-bottom: 10px;
             font-size: 18px;
         }
@@ -147,14 +148,14 @@ $categoryList = getProductCategories();
             border: 2px solid #ddd;
             border-radius: 10px;
             text-decoration: none;
-            color: #667eea;
+            color: #11998e;
             font-weight: 600;
             text-align: center;
             transition: all 0.2s;
         }
         
         .category-btn:hover {
-            border-color: #667eea;
+            border-color: #11998e;
             background: #f5f7ff;
             transform: translateY(-2px);
         }
@@ -168,7 +169,7 @@ $categoryList = getProductCategories();
         }
         
         .info-card h3 {
-            color: #667eea;
+            color: #11998e;
             margin-bottom: 15px;
             border-bottom: 2px solid #f0f0f0;
             padding-bottom: 10px;
@@ -318,7 +319,7 @@ $categoryList = getProductCategories();
         
         <?php if (count($orders) > 0): ?>
             <div class="order-list">
-                <div style="background: #f8f9fa; padding: 15px; font-weight: 600; color: #667eea; border-bottom: 2px solid #eee;">
+                <div style="background: #f8f9fa; padding: 15px; font-weight: 600; color: #11998e; border-bottom: 2px solid #eee;">
                     📋 Recent Orders
                 </div>
                 <?php foreach (array_slice($orders, 0, 5) as $order): ?>

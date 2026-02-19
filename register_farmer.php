@@ -69,27 +69,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <style>
 /* Your existing CSS */
 * {margin:0;padding:0;box-sizing:border-box;}
-body {font-family:'Segoe UI', Tahoma, Geneva, Verdana,sans-serif; background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); min-height:100vh;padding:20px;}
-.container {max-width:700px;margin:30px auto;background:white;padding:40px;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,0.2);}
+body {font-family:'Segoe UI', Tahoma, Geneva, Verdana,sans-serif; background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%); min-height:100vh;padding:20px;}
+.container {max-width:700px;margin:30px auto;background:white;padding:40px;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,0.2);border:3px solid #11998e;}
 .header{text-align:center;margin-bottom:30px;}
-.header h1{color:#667eea;font-size:24px;margin-bottom:5px;}
+.header h1{color:#11998e;font-size:24px;margin-bottom:5px;border-bottom:3px solid #11998e;padding-bottom:10px;}
 .header p{color:#999;font-size:14px;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
 .form-row.full{grid-template-columns:1fr;}
 .form-group{display:flex;flex-direction:column;}
 .form-group label{margin-bottom:8px;color:#333;font-weight:500;font-size:14px;}
 .form-group label .required{color:#e74c3c;}
-.form-group input,.form-group select{padding:12px;border:1px solid #ddd;border-radius:5px;font-size:14px;transition:border-color 0.3s;}
-.form-group input:focus,.form-group select:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,0.1);}
-.error{background:#f8d7da;color:#721c24;padding:12px;border-radius:5px;margin-bottom:20px;border:1px solid #f5c6cb;}
-.success{background:#d4edda;color:#155724;padding:12px;border-radius:5px;margin-bottom:20px;border:1px solid #c3e6cb;}
-.register-btn{width:100%;padding:12px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;border-radius:5px;font-size:16px;font-weight:600;cursor:pointer;transition:transform 0.2s;margin-top:10px;}
+.form-group input,.form-group select{padding:12px;border:2px solid #11998e;border-radius:5px;font-size:14px;transition:border-color 0.3s;}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:#11998e;box-shadow:0 0 0 3px rgba(17,153,142,0.2);}
+.error{background:#f8d7da;color:#721c24;padding:12px;border-radius:5px;margin-bottom:20px;border:2px solid #11998e;}
+.success{background:#d4edda;color:#155724;padding:12px;border-radius:5px;margin-bottom:20px;border:2px solid #11998e;}
+.register-btn{width:100%;padding:12px;background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);color:white;border:2px solid #11998e;border-radius:5px;font-size:16px;font-weight:600;cursor:pointer;transition:transform 0.2s;margin-top:10px;}
 .register-btn:hover{transform:translateY(-2px);}
 .footer{text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid #eee;}
 .footer p{color:#666;font-size:14px;margin-bottom:10px;}
-.footer a{color:#667eea;text-decoration:none;font-weight:600;}
+.footer a{color:#11998e;text-decoration:none;font-weight:600;}
 .footer a:hover{text-decoration:underline;}
-.section-title{color:#667eea;font-size:16px;font-weight:600;margin-top:20px;margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid #f0f0f0;}
+.section-title{color:#11998e;font-size:16px;font-weight:600;margin-top:20px;margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid #11998e;}
 </style>
 </head>
 <body>

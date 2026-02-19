@@ -40,6 +40,7 @@ $user = getCurrentUser();
             justify-content: space-between;
             align-items: center;
             color: white;
+            border-bottom: 4px solid #11998e;
         }
 
         header h1 {
@@ -322,7 +323,7 @@ $user = getCurrentUser();
         </div>
 
         <div style="margin-top: 40px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <h3 style="color: #667eea; margin-bottom: 15px;">📊 Recent Activity</h3>
+            <h3 style="color: #11998e; margin-bottom: 15px;">📊 Recent Activity</h3>
             <p>Check the individual management pages for the latest activities and updates.</p>
         </div>
     </div>

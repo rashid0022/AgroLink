@@ -26,10 +26,11 @@ $orders = getCustomerOrders($user['user_id']);
         }
         
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 4px solid #11998e;
         }
         
         header h1 {
@@ -88,7 +89,7 @@ $orders = getCustomerOrders($user['user_id']);
         .price {
             font-size: 18px;
             font-weight: 600;
-            color: #667eea;
+            color: #11998e;
             margin-bottom: 10px;
         }
         
@@ -121,7 +122,7 @@ $orders = getCustomerOrders($user['user_id']);
         }
         
         .view-link {
-            color: #667eea;
+            color: #11998e;
             text-decoration: none;
             font-weight: 600;
         }
@@ -144,7 +145,7 @@ $orders = getCustomerOrders($user['user_id']);
         .shop-btn {
             display: inline-block;
             margin-top: 15px;
-            background: #667eea;
+            background: #11998e;
             color: white;
             padding: 10px 20px;
             text-decoration: none;
@@ -153,7 +154,7 @@ $orders = getCustomerOrders($user['user_id']);
         }
         
         .shop-btn:hover {
-            background: #764ba2;
+            background: #38ef7d;
         }
     </style>
 </head>

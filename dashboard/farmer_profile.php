@@ -98,10 +98,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 4px solid #11998e;
         }
         
         header h1 {
@@ -286,7 +287,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .btn-save {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
         }
 
@@ -304,7 +305,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .edit-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
             padding: 10px 20px;
             border: none;

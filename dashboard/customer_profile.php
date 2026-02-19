@@ -44,10 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 4px solid #11998e;
         }
         
         header h1 {
@@ -115,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #11998e;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
         
@@ -147,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .submit-btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
             border: none;
             border-radius: 5px;

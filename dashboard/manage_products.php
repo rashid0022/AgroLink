@@ -62,7 +62,7 @@ $products = $stmt->fetchAll();
         }
         
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -117,8 +117,8 @@ $products = $stmt->fetchAll();
         }
         
         .filter-btn.active {
-            border-color: #667eea;
-            background: #667eea;
+            border-color: #11998e;
+            background: #11998e;
             color: white;
         }
         
@@ -173,7 +173,7 @@ $products = $stmt->fetchAll();
         .price {
             font-size: 16px;
             font-weight: 600;
-            color: #667eea;
+            color: #11998e;
             margin-bottom: 5px;
         }
         

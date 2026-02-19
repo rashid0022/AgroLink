@@ -112,8 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
         
         .filter-btn.active {
-            border-color: #667eea;
-            background: #667eea;
+            border-color: #11998e;
+            background: #11998e;
             color: white;
         }
         

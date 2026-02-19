@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
         
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -111,11 +111,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #11998e;
         }
         
         .delivery-card h3 {
-            color: #667eea;
+            color: #11998e;
             margin-bottom: 15px;
             font-size: 18px;
         }
@@ -229,15 +229,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         <h3>Order #<?php echo $order['order_id']; ?></h3>
                         
                         <div class="delivery-info">
-                            <strong>Customer:</strong> <?php echo htmlspecialchars($order['customer_name']); ?>
+                            <strong>Customer:</strong> <?php echo htmlspecialchars($order['customer_name'] ?? ''); ?>
                         </div>
                         
                         <div class="delivery-info">
-                            <strong>Email:</strong> <?php echo htmlspecialchars($order['email']); ?>
+                            <strong>Email:</strong> <?php echo htmlspecialchars($order['email'] ?? ''); ?>
                         </div>
                         
                         <div class="delivery-info">
-                            <strong>Phone:</strong> <?php echo htmlspecialchars($order['phone_number']); ?>
+                            <strong>Phone:</strong> <?php echo htmlspecialchars($order['phone_number'] ?? ''); ?>
                         </div>
                         
                         <div class="delivery-info">
@@ -256,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         
                         <div class="action-buttons">
                             <?php if ($order['delivery_status'] === 'Pending' || empty($order['delivery_status'])): ?>
-                                <form method="POST" style="flex: 1;">
+                                <form method="POST" action="" style="flex: 1;">
                                     <input type="hidden" name="action" value="dispatch">
                                     <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
                                     <button type="submit" class="btn btn-dispatch">🚗 Dispatch</button>
@@ -264,7 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                             <?php endif; ?>
                             
                             <?php if ($order['delivery_status'] === 'Out for Delivery'): ?>
-                                <form method="POST" style="flex: 1;">
+                                <form method="POST" action="" style="flex: 1;">
                                     <input type="hidden" name="action" value="delivered">
                                     <input type="hidden" name="order_id" value="<?php echo $order['order_id']; ?>">
                                     <button type="submit" class="btn btn-delivered">✓ Delivered</button>

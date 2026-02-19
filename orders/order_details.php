@@ -120,10 +120,11 @@ foreach ($order_items as $item) {
         }
 
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-bottom: 4px solid #11998e;
         }
 
         header h1 {
@@ -158,7 +159,7 @@ foreach ($order_items as $item) {
         }
 
         h2 {
-            color: #667eea;
+            color: #11998e;
             margin-bottom: 20px;
             font-size: 20px;
             padding-bottom: 10px;
@@ -241,7 +242,7 @@ foreach ($order_items as $item) {
             padding: 12px;
             text-align: left;
             font-weight: 600;
-            color: #667eea;
+            color: #11998e;
             border-bottom: 2px solid #eee;
             font-size: 13px;
         }
@@ -262,7 +263,7 @@ foreach ($order_items as $item) {
 
         .item-price {
             text-align: right;
-            color: #667eea;
+            color: #11998e;
             font-weight: 600;
         }
 
@@ -283,10 +284,10 @@ foreach ($order_items as $item) {
         .total-row {
             margin-top: 15px;
             padding-top: 15px;
-            border-top: 2px solid #667eea;
+            border-top: 2px solid #11998e;
             font-weight: 600;
             font-size: 18px;
-            color: #667eea;
+            color: #11998e;
         }
 
         .section {
@@ -308,7 +309,7 @@ foreach ($order_items as $item) {
         .address-box label {
             display: block;
             font-weight: 600;
-            color: #667eea;
+            color: #11998e;
             margin-bottom: 10px;
         }
 
@@ -321,13 +322,13 @@ foreach ($order_items as $item) {
         .farmer-card {
             padding: 15px;
             background: #f0f4ff;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #11998e;
             border-radius: 6px;
             margin-bottom: 10px;
         }
 
         .farmer-card h4 {
-            color: #667eea;
+            color: #11998e;
             margin-bottom: 5px;
         }
 
@@ -375,13 +376,13 @@ foreach ($order_items as $item) {
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(17, 153, 142, 0.4);
         }
 
         .btn-secondary {
@@ -467,7 +468,7 @@ foreach ($order_items as $item) {
                 </div>
                 <div class="info-item">
                     <label>Total Amount</label>
-                    <value><?php echo formatCurrency($order['total_amount']); ?></value>
+                    <value><?php echo number_format($order['total_amount'], 2); ?> TZS</value>
                 </div>
                 <div class="info-item">
                     <label>Order Status</label>
@@ -546,8 +547,8 @@ foreach ($order_items as $item) {
                                 <td><?php echo htmlspecialchars($farmers[$item['product_id']]['farm_name'] ?? 'N/A'); ?></td>
                             <?php endif; ?>
                             <td style="text-align: center;"><?php echo $item['quantity']; ?></td>
-                            <td class="item-price"><?php echo formatCurrency($item['unit_price']); ?></td>
-                            <td class="item-price"><?php echo formatCurrency($item['subtotal']); ?></td>
+                            <td class="item-price"><?php echo number_format($item['unit_price'], 2); ?> TZS</td>
+                            <td class="item-price"><?php echo number_format($item['subtotal'], 2); ?> TZS</td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -556,7 +557,7 @@ foreach ($order_items as $item) {
             <div class="price-summary">
                 <div class="price-row">
                     <span>Subtotal:</span>
-                    <span><?php echo formatCurrency($order['total_amount']); ?></span>
+                    <span><?php echo number_format($order['total_amount'], 2); ?> TZS</span>
                 </div>
                 <div class="price-row">
                     <span>Delivery:</span>
@@ -564,7 +565,7 @@ foreach ($order_items as $item) {
                 </div>
                 <div class="price-row total-row">
                     <span>Total Amount:</span>
-                    <span><?php echo formatCurrency($order['total_amount']); ?></span>
+                    <span><?php echo number_format($order['total_amount'], 2); ?> TZS</span>
                 </div>
             </div>
         </div>
@@ -586,7 +587,7 @@ foreach ($order_items as $item) {
                     </div>
                     <div class="address-box">
                         <label>Amount Paid</label>
-                        <p><?php echo formatCurrency($payment['amount']); ?></p>
+                        <p><?php echo number_format($payment['amount'], 2); ?> TZS</p>
                     </div>
                     <div class="address-box">
                         <label>Payment Date</label>

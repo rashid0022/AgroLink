@@ -40,6 +40,7 @@ $rejectedCount = count(getFarmerProducts($farmer['farmer_id'], 'Rejected'));
             position: sticky;
             top: 0;
             z-index: 1000;
+            border-bottom: 4px solid #11998e;
         }
 
         header h1 {

@@ -15,7 +15,7 @@ echo ".container{background:white;padding:30px;border-radius:10px;max-width:600p
 echo ".success{color:#28a745;padding:10px;background:#d4edda;border-radius:5px;margin:10px 0;}";
 echo ".error{color:#dc3545;padding:10px;background:#f8d7da;border-radius:5px;margin:10px 0;}";
 echo ".info{color:#004085;padding:10px;background:#d1ecf1;border-radius:5px;margin:10px 0;}";
-echo "a{color:#667eea;text-decoration:none;}a:hover{text-decoration:underline;}</style>";
+echo "a{color:#11998e;text-decoration:none;}a:hover{text-decoration:underline;}</style>";
 echo "</head><body><div class='container'>";
 echo "<h1>🌾 AgroLink - Admin Setup</h1>";
 

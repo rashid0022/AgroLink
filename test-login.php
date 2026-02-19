@@ -54,7 +54,7 @@ foreach ($test_cases as $case) {
 }
 
 echo "<h2>✅ If all tests passed, try logging in!</h2>";
-echo "<a href='login.php' style='padding:10px 20px;background:#667eea;color:white;border-radius:5px;text-decoration:none;'>Go to Login</a>";
+echo "<a href='login.php' style='padding:10px 20px;background:#11998e;color:white;border-radius:5px;text-decoration:none;'>Go to Login</a>";
 
 echo "</body></html>";
 ?>

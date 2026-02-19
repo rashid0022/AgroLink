@@ -80,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 100%;
             max-width: 420px;
             animation: fadeIn 0.6s ease-in-out;
+            border: 3px solid #11998e;
         }
 
         /* Animation */
@@ -104,6 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #11998e;
             font-size: 30px;
             font-weight: 700;
+            border-bottom: 3px solid #11998e;
+            padding-bottom: 10px;
         }
 
         .logo p {

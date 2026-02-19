@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             min-height: 100vh;
             color: #333;
         }
@@ -313,7 +313,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <?php echo htmlspecialchars($item['product_name']); ?><br>
                                 <span style="color: #999; font-size: 12px;">Qty: <?php echo $item['quantity']; ?></span>
                             </div>
-                            <div class="item-price"><?php echo formatCurrency($item['subtotal']); ?></div>
+                            <div class="item-price"><?php echo number_format($item['subtotal'], 2); ?> TZS</div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -321,7 +321,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="price-summary">
                     <div class="price-row">
                         <span>Subtotal:</span>
-                        <span><?php echo formatCurrency($order['total_amount']); ?></span>
+                        <span><?php echo number_format($order['total_amount'], 2); ?> TZS</span>
                     </div>
                     <div class="price-row">
                         <span>Delivery:</span>
@@ -329,7 +329,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                     <div class="total-row">
                         <span>Amount Due:</span>
-                        <span><?php echo formatCurrency($order['total_amount']); ?></span>
+                        <span><?php echo number_format($order['total_amount'], 2); ?> TZS</span>
                     </div>
                 </div>
             </div>
@@ -399,7 +399,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     <div class="button-group">
                         <button type="button" class="btn-back" onclick="window.history.back();">Back</button>
-                        <button type="submit" class="btn-pay">Pay <?php echo formatCurrency($order['total_amount']); ?></button>
+                        <button type="submit" class="btn-pay">Pay <?php echo number_format($order['total_amount'], 2); ?> TZS</button>
                     </div>
                 </form>
             </div>

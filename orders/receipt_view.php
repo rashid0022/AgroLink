@@ -51,10 +51,11 @@ $payment = $stmt->fetch();
         }
         
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 4px solid #11998e;
         }
         
         header h1 {
@@ -377,7 +378,7 @@ $payment = $stmt->fetch();
                 
                 <div class="receipt-row">
                     <span class="receipt-label">Subtotal</span>
-                    <span class="receipt-value"><?php echo formatCurrency($receipt['total_amount']); ?></span>
+                    <span class="receipt-value"><?php echo number_format($receipt['total_amount'], 2); ?> TZS</span>
                 </div>
                 
                 <div class="receipt-row">
@@ -389,7 +390,7 @@ $payment = $stmt->fetch();
                     <div class="receipt-row" style="border: none; margin: 20px 0;">
                         <span class="total-label">TOTAL AMOUNT</span>
                         <span class="total-amount" style="font-size: 24px;">
-                            <?php echo formatCurrency($receipt['total_amount']); ?>
+                            <?php echo number_format($receipt['total_amount'], 2); ?> TZS
                         </span>
                     </div>
                 </div>

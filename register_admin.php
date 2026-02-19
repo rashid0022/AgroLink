@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -103,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             width: 100%;
             max-width: 450px;
+            border: 3px solid #11998e;
         }
         
         .logo {
@@ -111,9 +112,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         .logo h1 {
-            color: #667eea;
+            color: #11998e;
             font-size: 28px;
             margin-bottom: 5px;
+            border-bottom: 3px solid #11998e;
+            padding-bottom: 10px;
         }
         
         .logo p {
@@ -136,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .form-group input {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ddd;
+            border: 2px solid #11998e;
             border-radius: 5px;
             font-size: 14px;
             transition: border-color 0.3s;
@@ -144,8 +147,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+            border-color: #11998e;
+            box-shadow: 0 0 5px rgba(17, 153, 142, 0.3);
         }
         
         .error-message {
@@ -154,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 12px;
             border-radius: 5px;
             margin-bottom: 20px;
-            border-left: 4px solid #f5c6cb;
+            border-left: 4px solid #11998e;
         }
         
         .success-message {
@@ -163,15 +166,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 12px;
             border-radius: 5px;
             margin-bottom: 20px;
-            border-left: 4px solid #c3e6cb;
+            border-left: 4px solid #11998e;
         }
         
         .submit-btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
-            border: none;
+            border: 2px solid #11998e;
             border-radius: 5px;
             font-weight: 600;
             font-size: 16px;
@@ -185,11 +188,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         .info-box {
             background: #e7f3ff;
-            border: 1px solid #b3d9ff;
+            border: 2px solid #11998e;
             padding: 15px;
             border-radius: 5px;
             margin-bottom: 20px;
-            color: #004085;
+            color: #11998e;
             font-size: 13px;
             line-height: 1.6;
         }
@@ -207,29 +210,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         .already-registered a {
-            color: #667eea;
+            color: #11998e;
             text-decoration: none;
             font-weight: 600;
         }
         
         .admin-exists-message {
             background: #fff3cd;
-            border: 1px solid #ffc107;
+            border: 2px solid #11998e;
             padding: 20px;
             border-radius: 5px;
             text-align: center;
-            color: #856404;
+            color: #11998e;
         }
         
         .admin-exists-message h2 {
             margin-bottom: 10px;
-            color: #856404;
+            color: #11998e;
         }
         
         .admin-exists-message a {
             display: inline-block;
             margin-top: 15px;
-            background: #667eea;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             color: white;
             padding: 10px 20px;
             border-radius: 5px;
