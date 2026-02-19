@@ -28,14 +28,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Invalid payment method";
     } else {
         // Create payment record - mark as Held (escrow)
-        $payment_result = createPayment($order_id, $order['total_amount'], $payment_method, 'Held');
+        $payment_result = createPayment($order_id, $payment_method);
+
         
         if ($payment_result['success']) {
             // Create receipt
-            $receipt_result = createReceipt($order_id, $payment_result['payment_id'], $order['total_amount']);
+            $receipt_result = createReceipt($payment_result['payment_id']);
             
             if ($receipt_result['success']) {
-                header("Location: ../orders/receipt_view.php?receipt_id=" . $receipt_result['receipt_id']);
+                header("Location: receipt_view.php?receipt_id=" . $receipt_result['receipt_id']);
                 exit;
             } else {
                 $error = "Payment recorded but receipt generation failed";

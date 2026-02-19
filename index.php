@@ -18,255 +18,268 @@ if (!empty($_GET['search'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AgroLink - Farm to Table Marketplace</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f6fa;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #eef2f3, #dfe9f3);
             color: #333;
         }
-        
+
+        /* HEADER */
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            padding: 18px 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
-        
+
         .header-content {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         header h1 {
-            font-size: 24px;
+            font-size: 26px;
+            font-weight: 700;
+            color: white;
         }
-        
+
         .nav-links {
             display: flex;
-            gap: 20px;
+            gap: 25px;
             align-items: center;
         }
-        
+
         .nav-links a {
             color: white;
             text-decoration: none;
-            font-weight: 600;
-            transition: opacity 0.2s;
+            font-weight: 500;
+            transition: 0.3s;
         }
-        
+
         .nav-links a:hover {
-            opacity: 0.8;
+            opacity: 0.7;
         }
-        
+
+        /* CONTAINER */
         .container {
             max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 20px;
+            margin: auto;
+            padding: 40px 20px;
         }
-        
+
+        /* HERO */
         .hero {
-            text-align: center;
-            margin-bottom: 40px;
             background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 50px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
         }
-        
+
         .hero h2 {
-            color: #667eea;
+            font-size: 30px;
             margin-bottom: 10px;
-            font-size: 28px;
+            color: #11998e;
         }
-        
+
         .hero p {
-            color: #999;
-            margin-bottom: 20px;
+            color: #777;
+            margin-bottom: 25px;
         }
-        
+
         .search-form {
             display: flex;
+            justify-content: center;
             gap: 10px;
-            max-width: 400px;
-            margin: 20px auto 0;
+            max-width: 500px;
+            margin: auto;
         }
-        
+
         .search-form input {
             flex: 1;
-            padding: 12px;
+            padding: 14px;
+            border-radius: 30px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            outline: none;
             font-size: 14px;
+            transition: 0.3s;
         }
-        
+
+        .search-form input:focus {
+            border-color: #11998e;
+            box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.2);
+        }
+
         .search-form button {
-            padding: 12px 20px;
-            background: #667eea;
-            color: white;
+            padding: 14px 25px;
+            border-radius: 30px;
             border: none;
-            border-radius: 5px;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: 0.3s;
         }
-        
+
         .search-form button:hover {
-            background: #764ba2;
+            transform: scale(1.05);
         }
-        
+
+        /* FILTERS */
         .filters {
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            margin-bottom: 35px;
         }
-        
+
         .filters h3 {
             margin-bottom: 15px;
-            color: #667eea;
+            color: #11998e;
         }
-        
+
         .filter-buttons {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
-        
+
         .filter-btn {
-            padding: 8px 15px;
-            border: 2px solid #ddd;
-            background: white;
-            border-radius: 20px;
-            cursor: pointer;
+            padding: 8px 18px;
+            border-radius: 30px;
+            border: 1px solid #ddd;
+            background: #f8f8f8;
             text-decoration: none;
-            color: #333;
-            font-weight: 600;
-            transition: all 0.2s;
+            color: #444;
+            font-size: 14px;
+            transition: 0.3s;
         }
-        
+
         .filter-btn:hover,
         .filter-btn.active {
-            border-color: #667eea;
-            background: #f5f7ff;
-            color: #667eea;
-        }
-        
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .product-card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-        }
-        
-        .product-image {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 60px;
-        }
-        
-        .product-content {
-            padding: 15px;
-        }
-        
-        .product-category {
-            font-size: 12px;
-            color: #999;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-        
-        .product-name {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #333;
-        }
-        
-        .product-farmer {
-            font-size: 13px;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-        
-        .product-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            font-size: 13px;
-            color: #999;
-        }
-        
-        .product-price {
-            font-size: 20px;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-        
-        .add-to-cart-btn {
-            width: 100%;
-            padding: 10px;
-            background: #4caf50;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
             color: white;
             border: none;
-            border-radius: 5px;
+        }
+
+        /* PRODUCTS GRID */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        /* PRODUCT CARD */
+        .product-card {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            transition: 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image {
+            height: 190px;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 55px;
+            color: white;
+        }
+
+        .product-content {
+            padding: 20px;
+        }
+
+        .product-category {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .product-farmer {
+            font-size: 13px;
+            color: #11998e;
+            margin-bottom: 10px;
+        }
+
+        .product-meta {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .product-price {
+            font-size: 22px;
+            font-weight: 700;
+            color: #11998e;
+            margin-bottom: 15px;
+        }
+
+        /* BUTTON */
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 30px;
+            border: none;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: 0.3s;
         }
-        
+
         .add-to-cart-btn:hover {
-            background: #45a049;
+            transform: scale(1.05);
         }
-        
+
+        /* EMPTY STATE */
         .empty-state {
+            background: white;
+            padding: 60px;
+            border-radius: 15px;
             text-align: center;
-            padding: 60px 20px;
-            color: #999;
-        }
-        
-        .empty-state h3 {
-            margin-bottom: 10px;
-            font-size: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            color: #777;
         }
     </style>
+
 </head>
+
 <body>
     <header>
         <div class="header-content">
@@ -289,7 +302,7 @@ if (!empty($_GET['search'])) {
             </div>
         </div>
     </header>
-    
+
     <div class="container">
         <div class="hero">
             <h2>Farm to Table Marketplace</h2>
@@ -299,7 +312,7 @@ if (!empty($_GET['search'])) {
                 <button type="submit">Search</button>
             </form>
         </div>
-        
+
         <div class="filters">
             <h3>Browse by Category</h3>
             <div class="filter-buttons">
@@ -311,7 +324,7 @@ if (!empty($_GET['search'])) {
                 <?php endforeach; ?>
             </div>
         </div>
-        
+
         <?php if (count($products) === 0): ?>
             <div class="empty-state">
                 <h3>No products found</h3>
@@ -321,7 +334,13 @@ if (!empty($_GET['search'])) {
             <div class="products-grid">
                 <?php foreach ($products as $product): ?>
                     <div class="product-card">
-                        <div class="product-image">📦</div>
+                        <div class="product-image">
+                            <?php if (!empty($product['product_image']) && file_exists('assets/images/products/' . $product['product_image'])): ?>
+                                <img src="assets/images/products/<?php echo htmlspecialchars($product['product_image']); ?>" alt="<?php echo htmlspecialchars($product['product_name']); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                            <?php else: ?>
+                                📦
+                            <?php endif; ?>
+                        </div>
                         <div class="product-content">
                             <div class="product-category"><?php echo htmlspecialchars($product['category']); ?></div>
                             <div class="product-name"><?php echo htmlspecialchars($product['product_name']); ?></div>
@@ -345,4 +364,5 @@ if (!empty($_GET['search'])) {
         <?php endif; ?>
     </div>
 </body>
+
 </html>

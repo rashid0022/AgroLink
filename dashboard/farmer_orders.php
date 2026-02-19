@@ -11,6 +11,7 @@ $stmt = $GLOBALS['conn']->prepare("
     FROM orders o
     JOIN order_items oi ON o.order_id = oi.order_id
     JOIN products p ON oi.product_id = p.product_id
+    JOIN users u ON o.user_id = u.user_id
     WHERE p.farmer_id = ?
     ORDER BY o.order_date DESC
 ");

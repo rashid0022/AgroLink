@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
         
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e, #38ef7d);
             color: white;
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -227,6 +227,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             padding: 40px;
             color: #999;
         }
+
+        .farmer-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            object-fit: cover;
+            border: 2px solid #ddd;
+        }
+
+        .photo-placeholder {
+            width: 50px;
+            height: 50px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #bbb;
+            font-size: 24px;
+            border: 2px solid #ddd;
+        }
     </style>
 </head>
 <body>
@@ -267,6 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 <table>
                     <thead>
                         <tr>
+                            <th>Photo</th>
                             <th>Farmer Name</th>
                             <th>Email</th>
                             <th>Farm Name</th>
@@ -280,6 +302,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     <tbody>
                         <?php foreach ($farmers as $farmer): ?>
                             <tr>
+                                <td>
+                                    <?php if (!empty($farmer['passport_photo']) && file_exists('../assets/images/farmers/' . $farmer['passport_photo'])): ?>
+                                        <img src="../assets/images/farmers/<?php echo htmlspecialchars($farmer['passport_photo']); ?>" alt="Farmer Photo" class="farmer-photo">
+                                    <?php else: ?>
+                                        <div class="photo-placeholder">📷</div>
+                                    <?php endif; ?>
+                                </td>
                                 <td><?php echo htmlspecialchars($farmer['full_name']); ?></td>
                                 <td><?php echo htmlspecialchars($farmer['email']); ?></td>
                                 <td><?php echo htmlspecialchars($farmer['farm_name']); ?></td>

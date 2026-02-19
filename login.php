@@ -48,6 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - AgroLink</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -55,21 +57,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+
+            margin: 50px;
+
+            /* BACKGROUND IMAGE */
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                url('assets/images/photo.jpg') no-repeat center center/cover;
         }
 
+        /* LOGIN CARD */
         .login-container {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 45px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .logo {
@@ -78,13 +101,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .logo h1 {
-            color: #667eea;
-            font-size: 28px;
-            margin-bottom: 5px;
+            color: #11998e;
+            font-size: 30px;
+            font-weight: 700;
         }
 
         .logo p {
-            color: #999;
+            color: #666;
             font-size: 14px;
         }
 
@@ -101,59 +124,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .form-group input {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 10px;
             font-size: 14px;
-            transition: border-color 0.3s;
+            transition: 0.3s;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #11998e;
+            box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.2);
         }
 
+        /* ALERT BOXES */
         .error,
         .success {
             padding: 12px;
-            border-radius: 5px;
+            border-radius: 8px;
             margin-bottom: 20px;
             font-size: 14px;
         }
 
         .error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: #ffe5e5;
+            color: #b30000;
+            border-left: 4px solid #ff4d4d;
         }
 
         .success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: #e6fff2;
+            color: #006644;
+            border-left: 4px solid #00cc66;
         }
 
+        /* BUTTON */
         .login-btn {
             width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 14px;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: 0.3s;
         }
 
         .login-btn:hover {
-            transform: translateY(-2px);
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
+        /* FOOTER */
         .footer-links {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 25px;
             padding-top: 20px;
             border-top: 1px solid #eee;
         }
@@ -165,15 +192,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .footer-links a {
-            color: #667eea;
+            color: #11998e;
             text-decoration: none;
             font-weight: 600;
             display: block;
             margin-bottom: 8px;
+            transition: 0.3s;
         }
 
         .footer-links a:hover {
-            text-decoration: underline;
+            opacity: 0.7;
         }
 
         .divider {
@@ -183,6 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 12px;
         }
     </style>
+
 </head>
 
 <body>

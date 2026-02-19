@@ -20,59 +20,88 @@ $category = '';
 $price = '';
 $quantity = '';
 
+// Create uploads directory if it doesn't exist
+$uploadsDir = '../assets/images/products/';
+if (!is_dir($uploadsDir)) {
+    mkdir($uploadsDir, 0755, true);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $productName = isset($_POST['product_name']) ? trim($_POST['product_name']) : '';
     $category = isset($_POST['category']) ? trim($_POST['category']) : '';
     $price = isset($_POST['price']) ? floatval($_POST['price']) : 0;
     $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 0;
+    $productImage = null;
 
     if (empty($productName) || empty($category) || $price <= 0 || $quantity <= 0) {
         $error = 'Please fill all fields with valid values';
+    } elseif (!isset($_FILES['product_image']) || $_FILES['product_image']['error'] == UPLOAD_ERR_NO_FILE) {
+        $error = 'Please upload a product image';
     } else {
-        $result = addProduct($farmer['farmer_id'], $productName, $category, $price, $quantity);
-        if ($result['success']) {
-            $success = 'Product added successfully! It will appear in the marketplace after admin approval.';
-            // Reset variables after successful submission
-            $productName = $category = $price = $quantity = '';
+        // Handle file upload
+        $file = $_FILES['product_image'];
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $maxFileSize = 5 * 1024 * 1024; // 5MB
+
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            $error = 'Error uploading file';
+        } elseif (!in_array($file['type'], $allowedTypes)) {
+            $error = 'Only image files are allowed (JPG, PNG, GIF, WebP)';
+        } elseif ($file['size'] > $maxFileSize) {
+            $error = 'Image size must be less than 5MB';
         } else {
-            $error = $result['message'];
+            // Generate unique filename
+            $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $productImage = 'product_' . time() . '_' . rand(1000, 9999) . '.' . $fileExtension;
+            $uploadPath = $uploadsDir . $productImage;
+
+            if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+                $result = addProduct($farmer['farmer_id'], $productName, $category, $price, $quantity, $productImage);
+                if ($result['success']) {
+                    $success = 'Product added successfully with image! It is now available in the marketplace.';
+                    // Reset variables after successful submission
+                    $productName = $category = $price = $quantity = '';
+                } else {
+                    $error = $result['message'];
+                    // Delete uploaded image if database insert failed
+                    if (file_exists($uploadPath)) {
+                        unlink($uploadPath);
+                    }
+                }
+            } else {
+                $error = 'Failed to upload image. Please try again.';
+            }
         }
     }
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product - AgroLink</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f6fa;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #eef2f3, #dfe9f3);
             color: #333;
         }
 
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e, #38ef7d);
             color: white;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
         header h1 {
             display: inline-block;
-            font-size: 24px;
-            margin-right: 20px;
+            font-size: 26px;
+            font-weight: 700;
         }
 
         .header-right {
@@ -86,9 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-weight: 600;
         }
 
-        .header-right a:hover {
-            text-decoration: underline;
-        }
+        .header-right a:hover { text-decoration: underline; }
 
         .container {
             max-width: 600px;
@@ -99,8 +126,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .form-container {
             background: white;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .info {
+            background: #e0f7fa;
+            border: 1px solid #26a69a;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            color: #00796b;
+            font-size: 14px;
         }
 
         .form-group {
@@ -116,9 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 14px;
         }
 
-        .form-group label .required {
-            color: #e74c3c;
-        }
+        .form-group label .required { color: #e74c3c; }
 
         .form-group input,
         .form-group select {
@@ -131,8 +166,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #11998e;
+            box-shadow: 0 0 0 3px rgba(17,152,142,0.1);
         }
 
         .error {
@@ -156,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .submit-btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #11998e, #38ef7d);
             color: white;
             border: none;
             border-radius: 5px;
@@ -166,35 +201,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             transition: transform 0.2s;
         }
 
-        .submit-btn:hover {
-            transform: translateY(-2px);
-        }
+        .submit-btn:hover { transform: translateY(-2px); }
 
         .cancel-link {
             display: block;
             text-align: center;
             margin-top: 15px;
-            color: #667eea;
+            color: #11998e;
             text-decoration: none;
             font-weight: 600;
         }
 
-        .cancel-link:hover {
-            text-decoration: underline;
-        }
-
-        .info {
-            background: #e3f2fd;
-            border: 1px solid #90caf9;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            color: #1565c0;
-            font-size: 14px;
-        }
+        .cancel-link:hover { text-decoration: underline; }
     </style>
 </head>
-
 <body>
     <header>
         <h1>➕ Add Product</h1>
@@ -207,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container">
         <div class="form-container">
             <div class="info">
-                Products require admin approval before appearing in the marketplace.
+                Add your product details and upload a high-quality product image. Products are automatically available in the marketplace.
             </div>
 
             <?php if (!empty($error)): ?>
@@ -218,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="success"><?php echo htmlspecialchars($success); ?></div>
             <?php endif; ?>
 
-            <form method="POST" action="add_product.php">
+            <form method="POST" action="add_product.php" enctype="multipart/form-data">
                 <div class="form-group">
                     <label>Product Name <span class="required">*</span></label>
                     <input type="text" name="product_name" value="<?php echo htmlspecialchars($productName ?? ''); ?>" placeholder="e.g., Fresh Tomatoes" required>
@@ -235,8 +255,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <option value="Herbs" <?php echo ($category === 'Herbs') ? 'selected' : ''; ?>>Herbs</option>
                         <option value="Other" <?php echo ($category === 'Other') ? 'selected' : ''; ?>>Other</option>
                     </select>
-
-
                 </div>
 
                 <div class="form-group">
@@ -249,11 +267,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="number" name="quantity" min="1" value="<?php echo htmlspecialchars($quantity ?? ''); ?>" placeholder="In kg or units" required>
                 </div>
 
+                <div class="form-group">
+                    <label>Product Image <span class="required">*</span></label>
+                    <input type="file" name="product_image" accept="image/*" required>
+                    <small style="color: #666; margin-top: 5px; display: block;">Accepted formats: JPG, PNG, GIF, WebP. Maximum size: 5MB</small>
+                </div>
+
                 <button type="submit" class="submit-btn">Add Product</button>
                 <a href="list_products.php" class="cancel-link">View My Products</a>
             </form>
         </div>
     </div>
 </body>
-
 </html>

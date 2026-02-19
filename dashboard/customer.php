@@ -303,6 +303,12 @@ $categoryList = getProductCategories();
                 <p>View and track your orders</p>
             </a>
             
+            <a href="customer_deliveries.php" class="menu-card">
+                <div class="menu-icon">📦</div>
+                <h3>My Deliveries</h3>
+                <p>Track deliveries and notifications</p>
+            </a>
+            
             <a href="customer_profile.php" class="menu-card">
                 <div class="menu-icon">👤</div>
                 <h3>My Profile</h3>

@@ -138,7 +138,7 @@ function loginUser($email, $password)
             return ['success' => false, 'message' => 'Your account has been blocked'];
         }
 
-       
+
 
         // Check password
         if (!password_verify($password, $user['password'])) {
@@ -264,6 +264,28 @@ function verifyFarmer($farmerId, $status)
     }
 }
 
+/**
+ * Update farmer profile
+ */
+function updateFarmerProfile($farmerId, $farmName, $location, $phoneNumber, $passportPhoto = null)
+{
+    global $conn;
+
+    try {
+        if ($passportPhoto) {
+            $stmt = $conn->prepare("UPDATE farmers SET farm_name = ?, location = ?, phone_number = ?, passport_photo = ? WHERE farmer_id = ?");
+            $stmt->execute([$farmName, $location, $phoneNumber, $passportPhoto, $farmerId]);
+        } else {
+            $stmt = $conn->prepare("UPDATE farmers SET farm_name = ?, location = ?, phone_number = ? WHERE farmer_id = ?");
+            $stmt->execute([$farmName, $location, $phoneNumber, $farmerId]);
+        }
+        return ['success' => true, 'message' => 'Profile updated successfully'];
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
+        return ['success' => false, 'message' => 'Update failed: ' . $e->getMessage()];
+    }
+}
+
 // ========================================
 // CUSTOMER FUNCTIONS
 // ========================================
@@ -335,18 +357,18 @@ function updateCustomerProfile($userId, $phoneNumber, $address, $city, $postalCo
 /**
  * Add new product
  */
-function addProduct($farmerId, $productName, $category, $price, $quantityAvailable)
+function addProduct($farmerId, $productName, $category, $price, $quantityAvailable, $productImage = null)
 {
     global $conn;
 
     try {
         $stmt = $conn->prepare("
-            INSERT INTO products (farmer_id, product_name, category, price, quantity_available) 
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO products (farmer_id, product_name, category, price, quantity_available, approval_status, product_image) 
+            VALUES (?, ?, ?, ?, ?, 'Approved', ?)
         ");
-        $stmt->execute([$farmerId, $productName, $category, $price, $quantityAvailable]);
+        $stmt->execute([$farmerId, $productName, $category, $price, $quantityAvailable, $productImage]);
 
-        return ['success' => true, 'message' => 'Product added successfully', 'product_id' => $conn->lastInsertId()];
+        return ['success' => true, 'message' => 'Product added successfully and is now available in the marketplace', 'product_id' => $conn->lastInsertId()];
     } catch (PDOException $e) {
         error_log($e->getMessage());
         return ['success' => false, 'message' => 'Failed to add product'];
@@ -557,6 +579,9 @@ function addOrderItem($orderId, $productId, $quantity, $price)
     global $conn;
 
     try {
+        // Calculate subtotal
+        $subtotal = $quantity * $price;
+
         // Update product quantity
         $stmt = $conn->prepare("
             UPDATE products 
@@ -567,10 +592,10 @@ function addOrderItem($orderId, $productId, $quantity, $price)
 
         // Insert order item
         $stmt = $conn->prepare("
-            INSERT INTO order_items (order_id, product_id, quantity, price) 
-            VALUES (?, ?, ?, ?)
+            INSERT INTO order_items (order_id, product_id, quantity, unit_price, subtotal) 
+            VALUES (?, ?, ?, ?, ?)
         ");
-        $stmt->execute([$orderId, $productId, $quantity, $price]);
+        $stmt->execute([$orderId, $productId, $quantity, $price, $subtotal]);
 
         return ['success' => true, 'message' => 'Item added to order'];
     } catch (PDOException $e) {
@@ -578,6 +603,7 @@ function addOrderItem($orderId, $productId, $quantity, $price)
         return ['success' => false, 'message' => 'Failed to add item'];
     }
 }
+
 
 /**
  * Get order details
@@ -643,6 +669,13 @@ function getCustomerOrders($userId)
 /**
  * Update order status
  */
+// ========================================
+// ORDER FUNCTIONS
+// ========================================
+
+/**
+ * Update order status
+ */
 function updateOrderStatus($orderId, $orderStatus, $deliveryStatus = null)
 {
     global $conn;
@@ -666,8 +699,159 @@ function updateOrderStatus($orderId, $orderStatus, $deliveryStatus = null)
 
         return ['success' => true, 'message' => 'Order status updated'];
     } catch (PDOException $e) {
+        return ['success' => false, 'message' => 'Failed to update order: ' . $e->getMessage()];
+    }
+}
+
+/**
+ * Get farmer's orders ready for delivery
+ */
+function getFarmerDeliveryOrders($farmerId)
+{
+    global $conn;
+
+    try {
+        $stmt = $conn->prepare("
+            SELECT DISTINCT o.*, u.full_name as customer_name, u.email, u.phone_number
+            FROM orders o
+            JOIN order_items oi ON o.order_id = oi.order_id
+            JOIN products p ON oi.product_id = p.product_id
+            JOIN users u ON o.user_id = u.user_id
+            WHERE p.farmer_id = ? AND o.order_status = 'Paid' AND (o.delivery_status IS NULL OR o.delivery_status = 'Pending')
+            ORDER BY o.order_date DESC
+        ");
+        $stmt->execute([$farmerId]);
+        return $stmt->fetchAll();
+    } catch (PDOException $e) {
         error_log($e->getMessage());
-        return ['success' => false, 'message' => 'Failed to update order'];
+        return [];
+    }
+}
+
+/**
+ * Update delivery status
+ */
+function updateDeliveryStatus($orderId, $deliveryStatus)
+{
+    global $conn;
+
+    try {
+        $stmt = $conn->prepare("UPDATE orders SET delivery_status = ? WHERE order_id = ?");
+        $stmt->execute([$deliveryStatus, $orderId]);
+        
+        // Create notification for customer
+        $order = getOrder($orderId);
+        if ($deliveryStatus === 'Out for Delivery') {
+            createNotification($order['user_id'], 'Your order #' . $orderId . ' is out for delivery!', 'delivery');
+        } elseif ($deliveryStatus === 'Delivered') {
+            createNotification($order['user_id'], 'Your order #' . $orderId . ' has arrived! Please confirm receipt.', 'delivery');
+        }
+        
+        return ['success' => true, 'message' => 'Delivery status updated'];
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
+        return ['success' => false, 'message' => 'Update failed'];
+    }
+}
+
+/**
+ * Create notification
+ */
+function createNotification($userId, $message, $type = 'info')
+{
+    global $conn;
+
+    try {
+        $stmt = $conn->prepare("
+            INSERT INTO notifications (user_id, message, type, is_read, created_at) 
+            VALUES (?, ?, ?, 0, NOW())
+        ");
+        $stmt->execute([$userId, $message, $type]);
+        return ['success' => true];
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
+        return ['success' => false];
+    }
+}
+
+/**
+ * Get user notifications
+ */
+function getNotifications($userId, $limit = 10)
+{
+    global $conn;
+
+    try {
+        $stmt = $conn->prepare("
+            SELECT * FROM notifications 
+            WHERE user_id = ? 
+            ORDER BY created_at DESC 
+            LIMIT ?
+        ");
+        $stmt->execute([$userId, $limit]);
+        return $stmt->fetchAll();
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
+        return [];
+    }
+}
+
+/**
+ * Get unread notifications count
+ */
+function getUnreadNotificationsCount($userId)
+{
+    global $conn;
+
+    try {
+        $stmt = $conn->prepare("SELECT COUNT(*) as count FROM notifications WHERE user_id = ? AND is_read = 0");
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch();
+        return $result['count'];
+    } catch (PDOException $e) {
+        return 0;
+    }
+}
+
+/**
+ * Mark notification as read
+ */
+function markNotificationAsRead($notificationId)
+{
+    global $conn;
+
+    try {
+        $stmt = $conn->prepare("UPDATE notifications SET is_read = 1 WHERE notification_id = ?");
+        $stmt->execute([$notificationId]);
+        return ['success' => true];
+    } catch (PDOException $e) {
+        return ['success' => false];
+    }
+}
+
+/**
+ * Confirm delivery receipt
+ */
+function confirmDeliveryReceipt($orderId, $userId)
+{
+    global $conn;
+
+    try {
+        $order = getOrder($orderId);
+        
+        // Verify order belongs to user
+        if ($order['user_id'] != $userId) {
+            return ['success' => false, 'message' => 'Unauthorized'];
+        }
+        
+        $stmt = $conn->prepare("UPDATE orders SET order_status = 'Completed' WHERE order_id = ?");
+        $stmt->execute([$orderId]);
+        
+        createNotification($userId, 'Your order #' . $orderId . ' has been marked as received.', 'success');
+        
+        return ['success' => true, 'message' => 'Receipt confirmed'];
+    } catch (PDOException $e) {
+        return ['success' => false, 'message' => 'Failed to confirm receipt'];
     }
 }
 
@@ -683,19 +867,47 @@ function createPayment($orderId, $paymentMethod)
     global $conn;
 
     try {
-        $stmt = $conn->prepare("
-            INSERT INTO payments (order_id, payment_method) 
-            VALUES (?, ?)
-        ");
-        $stmt->execute([$orderId, $paymentMethod]);
+        // Angalia kama payment tayari ipo
+        $stmt = $conn->prepare("SELECT * FROM payments WHERE order_id = ?");
+        $stmt->execute([$orderId]);
+        if ($stmt->fetch()) {
+            return [
+                'success' => false,
+                'message' => 'Payment already exists for this order'
+            ];
+        }
 
-        // Update order status to Paid
+        // Pata total_amount ya order
+        $stmt = $conn->prepare("SELECT total_amount FROM orders WHERE order_id = ?");
+        $stmt->execute([$orderId]);
+        $order = $stmt->fetch();
+
+        if (!$order) {
+            return ['success' => false, 'message' => 'Order not found'];
+        }
+
+        $amount = $order['total_amount'];
+
+        // Insert payment
+        $stmt = $conn->prepare("
+            INSERT INTO payments (order_id, amount, payment_method, total_paid, payment_status, payment_date) 
+            VALUES (?, ?, ?, ?, 'Held', NOW())
+        ");
+        $stmt->execute([$orderId, $amount, $paymentMethod, $amount]);
+
+        $paymentId = $conn->lastInsertId();
+
+        // Update order status
         updateOrderStatus($orderId, 'Paid');
 
-        return ['success' => true, 'message' => 'Payment recorded', 'payment_id' => $conn->lastInsertId()];
+        return [
+            'success' => true,
+            'message' => 'Payment recorded',
+            'payment_id' => $paymentId
+        ];
+
     } catch (PDOException $e) {
-        error_log($e->getMessage());
-        return ['success' => false, 'message' => 'Payment creation failed'];
+        return ['success' => false, 'message' => 'Payment creation failed: ' . $e->getMessage()];
     }
 }
 
@@ -711,7 +923,6 @@ function getPayment($paymentId)
         $stmt->execute([$paymentId]);
         return $stmt->fetch();
     } catch (PDOException $e) {
-        error_log($e->getMessage());
         return null;
     }
 }
@@ -729,8 +940,7 @@ function releasePayment($paymentId)
 
         return ['success' => true, 'message' => 'Payment released successfully'];
     } catch (PDOException $e) {
-        error_log($e->getMessage());
-        return ['success' => false, 'message' => 'Failed to release payment'];
+        return ['success' => false, 'message' => 'Failed to release payment: ' . $e->getMessage()];
     }
 }
 
@@ -747,8 +957,7 @@ function refundPayment($paymentId)
 
         return ['success' => true, 'message' => 'Payment refunded successfully'];
     } catch (PDOException $e) {
-        error_log($e->getMessage());
-        return ['success' => false, 'message' => 'Failed to refund payment'];
+        return ['success' => false, 'message' => 'Failed to refund payment: ' . $e->getMessage()];
     }
 }
 
@@ -759,29 +968,48 @@ function refundPayment($paymentId)
 /**
  * Create receipt
  */
-function createReceipt($paymentId, $totalPaid)
+function createReceipt($paymentId)
 {
     global $conn;
 
     try {
+        // Pata payment details
+        $stmt = $conn->prepare("SELECT order_id, amount FROM payments WHERE payment_id = ?");
+        $stmt->execute([$paymentId]);
+        $payment = $stmt->fetch();
+
+        if (!$payment) {
+            return ['success' => false, 'message' => 'Payment not found'];
+        }
+
+        $orderId = $payment['order_id'];
+        $totalAmount = $payment['amount']; // Hii sasa inatumika kama total_amount
+
         // Generate unique receipt number
         $receiptNumber = 'RCP-' . date('YmdHis') . '-' . rand(1000, 9999);
 
+        // Insert receipt kwa schema mpya
         $stmt = $conn->prepare("
-            INSERT INTO receipts (payment_id, receipt_number, total_paid) 
-            VALUES (?, ?, ?)
+            INSERT INTO receipts 
+            (payment_id, order_id, receipt_number, total_amount) 
+            VALUES (?, ?, ?, ?)
         ");
-        $stmt->execute([$paymentId, $receiptNumber, $totalPaid]);
+        $stmt->execute([$paymentId, $orderId, $receiptNumber, $totalAmount]);
 
-        return ['success' => true, 'message' => 'Receipt generated', 'receipt_id' => $conn->lastInsertId(), 'receipt_number' => $receiptNumber];
+        return [
+            'success' => true,
+            'receipt_id' => $conn->lastInsertId(),
+            'receipt_number' => $receiptNumber
+        ];
+
     } catch (PDOException $e) {
         error_log($e->getMessage());
-        return ['success' => false, 'message' => 'Receipt generation failed'];
+        return ['success' => false, 'message' => 'Receipt generation failed: ' . $e->getMessage()];
     }
 }
 
 /**
- * Get receipt
+ * Get receipt with full details
  */
 function getReceipt($receiptId)
 {
@@ -799,7 +1027,6 @@ function getReceipt($receiptId)
         $stmt->execute([$receiptId]);
         return $stmt->fetch();
     } catch (PDOException $e) {
-        error_log($e->getMessage());
         return null;
     }
 }
